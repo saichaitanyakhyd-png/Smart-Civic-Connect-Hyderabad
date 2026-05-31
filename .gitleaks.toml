@@ -1,0 +1,14 @@
+title = "Smart Civic Connect Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[allowlist]
+description = "Allow non-secret project examples and generated storage paths"
+paths = [
+  '''^\.env\.example$''',
+  '''^data/''',
+  '''^uploads/''',
+  '''^package-lock\.json$'''
+]
+

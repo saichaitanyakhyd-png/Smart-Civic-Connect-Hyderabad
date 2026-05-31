@@ -58,6 +58,12 @@ function initializeDatabase() {
   return db;
 }
 
+function closeDatabase() {
+  if (!db) return;
+  db.close();
+  db = null;
+}
+
 function rowToReport(row) {
   return {
     id: row.id,
@@ -102,9 +108,7 @@ function insertReport(report) {
 }
 
 function findReport(id) {
-  const row = initializeDatabase()
-    .prepare("SELECT * FROM reports WHERE id = ?")
-    .get(id);
+  const row = initializeDatabase().prepare("SELECT * FROM reports WHERE id = ?").get(id);
 
   return row ? rowToReport(row) : null;
 }
@@ -191,13 +195,17 @@ async function createReport(req, res) {
 
     const report = {
       id,
-      name: typeof body.name === "string" && body.name.trim() ? body.name.trim() : "Anonymous citizen",
-      phone: typeof body.phone === "string" && body.phone.trim() ? body.phone.trim() : "Not provided",
+      name:
+        typeof body.name === "string" && body.name.trim() ? body.name.trim() : "Anonymous citizen",
+      phone:
+        typeof body.phone === "string" && body.phone.trim() ? body.phone.trim() : "Not provided",
       category: requiredString(body.category, "Category"),
       landmark: requiredString(body.landmark, "Area or landmark"),
       description: requiredString(body.description, "Description"),
       location:
-        body.location && typeof body.location.lat === "string" && typeof body.location.lng === "string"
+        body.location &&
+        typeof body.location.lat === "string" &&
+        typeof body.location.lng === "string"
           ? { lat: body.location.lat, lng: body.location.lng }
           : null,
       photoUrl,
@@ -242,7 +250,9 @@ async function clearReports(res) {
   await Promise.all(
     reports
       .filter((report) => report.photoUrl && report.photoUrl.startsWith("/uploads/"))
-      .map((report) => fs.rm(path.join(UPLOADS_DIR, path.basename(report.photoUrl)), { force: true }))
+      .map((report) =>
+        fs.rm(path.join(UPLOADS_DIR, path.basename(report.photoUrl)), { force: true })
+      )
   );
 
   sendJson(res, 200, { message: "All demo reports cleared." });
@@ -372,9 +382,17 @@ function listenOnAvailablePort(port, attemptsLeft = 20) {
   });
 }
 
-ensureStorage()
-  .then(() => listenOnAvailablePort(START_PORT))
-  .catch((error) => {
-    console.error("Unable to prepare storage:", error.message);
-    process.exit(1);
-  });
+if (require.main === module) {
+  ensureStorage()
+    .then(() => listenOnAvailablePort(START_PORT))
+    .catch((error) => {
+      console.error("Unable to prepare storage:", error.message);
+      process.exit(1);
+    });
+}
+
+module.exports = {
+  closeDatabase,
+  createAppServer,
+  ensureStorage,
+};

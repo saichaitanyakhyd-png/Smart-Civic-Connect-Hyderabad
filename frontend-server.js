@@ -15,7 +15,8 @@ const MIME_TYPES = {
 
 async function serve(req, res) {
   const requestUrl = new URL(req.url, `http://${req.headers.host}`);
-  const safePath = requestUrl.pathname === "/" ? "/index.html" : decodeURIComponent(requestUrl.pathname);
+  const safePath =
+    requestUrl.pathname === "/" ? "/index.html" : decodeURIComponent(requestUrl.pathname);
   const filePath = path.normalize(path.join(ROOT, safePath));
 
   if (!filePath.startsWith(ROOT)) {
@@ -27,7 +28,8 @@ async function serve(req, res) {
   try {
     const content = await fs.readFile(filePath);
     res.writeHead(200, {
-      "Content-Type": MIME_TYPES[path.extname(filePath).toLowerCase()] || "application/octet-stream",
+      "Content-Type":
+        MIME_TYPES[path.extname(filePath).toLowerCase()] || "application/octet-stream",
     });
     res.end(content);
   } catch {

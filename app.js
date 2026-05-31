@@ -83,7 +83,7 @@ async function loadReports() {
     const data = await apiRequest("/api/reports");
     state.reports = data.reports || [];
     renderReports();
-  } catch (error) {
+  } catch {
     showToast("Backend is not reachable. Start it with npm start.");
   }
 }
@@ -135,7 +135,7 @@ async function startCamera() {
     els.emptyPreview.hidden = true;
     els.captureBtn.disabled = false;
     els.cameraHint.textContent = "Camera is active. Capture the photo when the issue is visible.";
-  } catch (error) {
+  } catch {
     els.cameraHint.textContent = "Camera permission was blocked or unavailable.";
     showToast("Unable to open camera. Try uploading a photo instead.");
   }
