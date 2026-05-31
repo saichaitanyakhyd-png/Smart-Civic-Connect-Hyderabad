@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: smart-civic-connect
+    runtime: node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: 24.16.0
+      - key: STORAGE_DIR
+        value: /var/data
+    disk:
+      name: smart-civic-storage
+      mountPath: /var/data
+      sizeGB: 1

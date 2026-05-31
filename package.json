@@ -1,0 +1,22 @@
+{
+  "name": "smart-civic-connect",
+  "version": "1.0.0",
+  "description": "Hackathon prototype for reporting civic issues with photo, description, location, and status tracking.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "backend": "node server.js",
+    "frontend": "node frontend-server.js",
+    "deploy:check": "node --check server.js && node --check app.js && node --check frontend-server.js"
+  },
+  "engines": {
+    "node": ">=24.16.0"
+  },
+  "keywords": [
+    "smart-city",
+    "civic",
+    "hackathon"
+  ],
+  "author": "",
+  "license": "MIT"
+}

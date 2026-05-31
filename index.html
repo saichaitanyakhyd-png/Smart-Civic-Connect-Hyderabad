@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Civic Connect</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">SC</div>
+          <div>
+            <p class="eyebrow">City level project</p>
+            <h1>Smart Civic Connect</h1>
+          </div>
+        </div>
+
+        <nav class="nav-tabs" aria-label="App sections">
+          <button class="nav-tab active" type="button" data-tab="report">
+            <span class="icon" aria-hidden="true">+</span>
+            Report issue
+          </button>
+          <button class="nav-tab" type="button" data-tab="reports">
+            <span class="icon" aria-hidden="true">#</span>
+            Submitted
+          </button>
+        </nav>
+
+        <section class="city-card">
+          <p class="label">Live demo flow</p>
+          <ol>
+            <li>Capture or upload photo</li>
+            <li>Add description and category</li>
+            <li>Attach location</li>
+            <li>Submit civic report</li>
+          </ol>
+        </section>
+      </aside>
+
+      <main class="content">
+        <section class="topbar">
+          <div>
+            <p class="eyebrow">Citizen reporting desk</p>
+            <h2>Report civic issues in your area</h2>
+          </div>
+          <div class="status-pill">
+            <span class="dot"></span>
+            Backend connected
+          </div>
+        </section>
+
+        <section class="panel active" id="report-panel">
+          <form id="reportForm" class="report-layout">
+            <div class="capture-panel">
+              <div class="section-heading">
+                <p class="label">Photo evidence</p>
+                <h3>Camera or gallery</h3>
+              </div>
+
+              <div class="media-stage">
+                <video id="cameraPreview" autoplay playsinline hidden></video>
+                <img id="photoPreview" alt="Selected civic issue preview" hidden />
+                <div id="emptyPreview" class="empty-preview">
+                  <span class="camera-glyph" aria-hidden="true"></span>
+                  <strong>No photo selected</strong>
+                  <small>Use camera or upload an image from your device.</small>
+                </div>
+              </div>
+
+              <div class="action-grid">
+                <button class="tool-btn" id="startCameraBtn" type="button">
+                  <span aria-hidden="true">CAM</span>
+                  Open camera
+                </button>
+                <button class="tool-btn" id="captureBtn" type="button" disabled>
+                  <span aria-hidden="true">SHOT</span>
+                  Capture
+                </button>
+                <label class="tool-btn file-btn" for="photoInput">
+                  <span aria-hidden="true">IMG</span>
+                  Upload photo
+                </label>
+                <input id="photoInput" type="file" accept="image/*" />
+              </div>
+
+              <p class="hint" id="cameraHint">
+                Camera works best on localhost or a secure browser context.
+              </p>
+            </div>
+
+            <div class="details-panel">
+              <div class="section-heading">
+                <p class="label">Report details</p>
+                <h3>Describe the issue</h3>
+              </div>
+
+              <div class="field-grid">
+                <label>
+                  Reporter name
+                  <input
+                    id="reporterName"
+                    type="text"
+                    placeholder="Example: Ananya"
+                    autocomplete="name"
+                  />
+                </label>
+
+                <label>
+                  Mobile number
+                  <input
+                    id="phoneNumber"
+                    type="tel"
+                    placeholder="Example: 9876543210"
+                    autocomplete="tel"
+                  />
+                </label>
+
+                <label>
+                  Issue category
+                  <select id="category" required>
+                    <option value="">Select category</option>
+                    <option>Garbage not collected</option>
+                    <option>Road pothole</option>
+                    <option>Street light not working</option>
+                    <option>Water leakage</option>
+                    <option>Drainage problem</option>
+                    <option>Other civic issue</option>
+                  </select>
+                </label>
+
+                <label>
+                  Area or landmark
+                  <input
+                    id="landmark"
+                    type="text"
+                    placeholder="Example: Near bus stand"
+                    required
+                  />
+                </label>
+              </div>
+
+              <label class="full-field">
+                Description
+                <textarea
+                  id="description"
+                  rows="5"
+                  placeholder="Describe what happened, where it is, and what needs attention."
+                  required
+                ></textarea>
+              </label>
+
+              <div class="location-row">
+                <div>
+                  <p class="label">Location</p>
+                  <p id="locationText">No location attached yet</p>
+                </div>
+                <button id="locationBtn" class="secondary-btn" type="button">
+                  Get location
+                </button>
+              </div>
+
+              <div class="submit-row">
+                <button class="primary-btn" type="submit">Upload report</button>
+                <button class="secondary-btn" id="resetBtn" type="button">Reset</button>
+              </div>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" id="reports-panel">
+          <div class="reports-header">
+            <div>
+              <p class="eyebrow">Backend database</p>
+              <h2>Submitted complaints</h2>
+            </div>
+            <button id="clearReportsBtn" class="secondary-btn" type="button">
+              Clear demo reports
+            </button>
+          </div>
+
+          <div class="stats-row">
+            <div class="stat">
+              <span id="totalReports">0</span>
+              Total reports
+            </div>
+            <div class="stat">
+              <span id="photoReports">0</span>
+              With photo
+            </div>
+            <div class="stat">
+              <span id="locationReports">0</span>
+              With location
+            </div>
+          </div>
+
+          <div id="reportsList" class="reports-list"></div>
+        </section>
+      </main>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
