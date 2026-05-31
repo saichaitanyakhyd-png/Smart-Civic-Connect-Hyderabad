@@ -1,6 +1,7 @@
 const http = require("http");
 const fsSync = require("fs");
 const fs = require("fs/promises");
+const os = require("os");
 const path = require("path");
 const crypto = require("crypto");
 const { DatabaseSync } = require("node:sqlite");
@@ -8,12 +9,12 @@ const { DatabaseSync } = require("node:sqlite");
 const START_PORT = Number(process.env.PORT || 5600);
 const HOST = process.env.HOST || (process.env.PORT ? "0.0.0.0" : "127.0.0.1");
 const ROOT = __dirname;
-const STORAGE_ROOT = process.env.STORAGE_DIR ? path.resolve(process.env.STORAGE_DIR) : ROOT;
-const DATA_DIR = path.join(STORAGE_ROOT, "data");
-const UPLOADS_DIR = path.join(STORAGE_ROOT, "uploads");
-const DB_FILE = path.join(DATA_DIR, "smart_civic.db");
 const SHOULD_FALLBACK_PORT = !process.env.PORT;
 let db;
+let storageRoot = process.env.STORAGE_DIR ? path.resolve(process.env.STORAGE_DIR) : ROOT;
+let dataDir = path.join(storageRoot, "data");
+let uploadsDir = path.join(storageRoot, "uploads");
+let dbFile = path.join(dataDir, "smart_civic.db");
 
 const MIME_TYPES = {
   ".html": "text/html; charset=utf-8",
@@ -27,17 +28,43 @@ const MIME_TYPES = {
   ".svg": "image/svg+xml",
 };
 
+function configureStorage(root) {
+  storageRoot = root;
+  dataDir = path.join(storageRoot, "data");
+  uploadsDir = path.join(storageRoot, "uploads");
+  dbFile = path.join(dataDir, "smart_civic.db");
+}
+
+async function prepareStorage() {
+  await fs.mkdir(dataDir, { recursive: true });
+  await fs.mkdir(uploadsDir, { recursive: true });
+}
+
 async function ensureStorage() {
-  await fs.mkdir(DATA_DIR, { recursive: true });
-  await fs.mkdir(UPLOADS_DIR, { recursive: true });
+  try {
+    await prepareStorage();
+  } catch (error) {
+    if (!process.env.STORAGE_DIR) {
+      throw error;
+    }
+
+    const fallbackRoot = path.join(os.tmpdir(), "smart-civic-connect");
+    console.warn(
+      `Storage directory "${storageRoot}" is not writable (${error.code || error.message}). ` +
+        `Using temporary storage at "${fallbackRoot}".`
+    );
+    configureStorage(fallbackRoot);
+    await prepareStorage();
+  }
+
   initializeDatabase();
 }
 
 function initializeDatabase() {
   if (db) return db;
 
-  fsSync.mkdirSync(DATA_DIR, { recursive: true });
-  db = new DatabaseSync(DB_FILE);
+  fsSync.mkdirSync(dataDir, { recursive: true });
+  db = new DatabaseSync(dbFile);
   db.exec(`
     CREATE TABLE IF NOT EXISTS reports (
       id TEXT PRIMARY KEY,
@@ -180,7 +207,7 @@ async function savePhoto(dataUrl, reportId) {
   const mimeType = match[1] === "image/jpg" ? "image/jpeg" : match[1];
   const extension = mimeType.split("/")[1].replace("jpeg", "jpg");
   const fileName = `${reportId}.${extension}`;
-  const filePath = path.join(UPLOADS_DIR, fileName);
+  const filePath = path.join(uploadsDir, fileName);
   const bytes = Buffer.from(match[2], "base64");
 
   await fs.writeFile(filePath, bytes);
@@ -251,7 +278,7 @@ async function clearReports(res) {
     reports
       .filter((report) => report.photoUrl && report.photoUrl.startsWith("/uploads/"))
       .map((report) =>
-        fs.rm(path.join(UPLOADS_DIR, path.basename(report.photoUrl)), { force: true })
+        fs.rm(path.join(uploadsDir, path.basename(report.photoUrl)), { force: true })
       )
   );
 
@@ -282,9 +309,9 @@ async function serveStatic(req, res) {
 async function serveUpload(req, res) {
   const requestUrl = new URL(req.url, `http://${req.headers.host}`);
   const relativePath = decodeURIComponent(requestUrl.pathname.replace(/^\/uploads\/?/, ""));
-  const filePath = path.normalize(path.join(UPLOADS_DIR, relativePath));
+  const filePath = path.normalize(path.join(uploadsDir, relativePath));
 
-  if (!filePath.startsWith(UPLOADS_DIR)) {
+  if (!filePath.startsWith(uploadsDir)) {
     sendJson(res, 403, { message: "Forbidden." });
     return;
   }
@@ -377,8 +404,8 @@ function listenOnAvailablePort(port, attemptsLeft = 20) {
   server.listen(port, HOST, () => {
     const displayHost = HOST === "0.0.0.0" ? "127.0.0.1" : HOST;
     console.log(`Smart Civic Connect running at http://${displayHost}:${port}`);
-    console.log(`SQLite database: ${DB_FILE}`);
-    console.log(`Uploads folder: ${UPLOADS_DIR}`);
+    console.log(`SQLite database: ${dbFile}`);
+    console.log(`Uploads folder: ${uploadsDir}`);
   });
 }
 
