@@ -165,26 +165,6 @@ button,
   font-size: clamp(1.45rem, 3vw, 2.4rem);
 }
 
-.status-pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  min-width: max-content;
-  padding: 9px 13px;
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.72);
-  color: var(--green-dark);
-  font-weight: 800;
-}
-
-.dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: var(--green);
-}
-
 .panel {
   display: none;
 }
