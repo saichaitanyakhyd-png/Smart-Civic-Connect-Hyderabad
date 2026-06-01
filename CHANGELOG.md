@@ -10,6 +10,7 @@ This project follows a simple release history format. Add new entries under `Unr
 
 - Repository health documentation and configuration files.
 - Contributor, user, and agent documentation.
+- Preparation for the final Smart Civic Connect release and version tagging.
 
 ### Changed
 

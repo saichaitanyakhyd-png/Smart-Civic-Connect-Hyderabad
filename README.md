@@ -1,6 +1,6 @@
 # Smart Civic Connect
 
-Smart Civic Connect is a lightweight civic issue reporting prototype. Citizens can capture or upload a photo, describe a local issue, attach an optional GPS location, and submit the report to a Node.js backend. Submitted reports can be reviewed and moved through simple status states.
+Smart Civic Connect is a civic issue reporting platform that allows citizens to report public issues, track complaint status, receive updates, and communicate with local authorities efficiently. The system supports photo evidence, optional location, and status tracking for submitted reports.
 
 ## Features
 

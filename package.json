@@ -1,16 +1,19 @@
 {
   "name": "smart-civic-connect",
   "version": "1.0.0",
-  "description": "Hackathon prototype for reporting civic issues with photo, description, location, and status tracking.",
+  "description": "Civic issue reporting platform for reporting public issues, tracking complaint status, and storing report data with photo and location support.",
   "main": "server.js",
   "scripts": {
+    "prepare": "husky install",
     "start": "node server.js",
     "backend": "node server.js",
     "frontend": "node frontend-server.js",
     "deploy:check": "node --check server.js && node --check app.js && node --check frontend-server.js",
     "lint": "eslint .",
+    "dead-code": "knip",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
+    "changelog": "git-cliff --config cliff.toml --output CHANGELOG.md",
     "security:audit": "npm audit --audit-level=moderate",
     "security:secrets": "gitleaks detect --source . --redact --verbose",
     "security:check": "npm run security:audit && npm run security:secrets",
@@ -29,8 +32,13 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@nogoo9/gitleaks": "^8.30.1-post.2",
     "c8": "^10.1.3",
     "eslint": "^9.28.0",
+    "git-cliff": "^2.13.1",
+    "husky": "^8.0.0",
+    "knip": "^6.15.0",
     "prettier": "^3.5.3"
   }
 }
