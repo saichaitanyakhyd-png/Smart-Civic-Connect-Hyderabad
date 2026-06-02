@@ -1,0 +1,5 @@
+name: Smart Civic Connect
+specs_dir: specs
+templates_dir: .specify/templates
+author: "Smart Civic Connect Team"
+description: "Spec-Kit configuration for Spec-Driven Development"
