@@ -2,6 +2,14 @@
   "name": "smart-civic-connect",
   "version": "1.0.0",
   "description": "Civic issue reporting platform for reporting public issues, tracking complaint status, and storing report data with photo and location support.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/saichaitanyakhyd-png/Smart-Civic-Connect-Hyderabad.git"
+  },
+  "bugs": {
+    "url": "https://github.com/saichaitanyakhyd-png/Smart-Civic-Connect-Hyderabad/issues"
+  },
+  "homepage": "https://github.com/saichaitanyakhyd-png/Smart-Civic-Connect-Hyderabad#readme",
   "main": "server.js",
   "scripts": {
     "prepare": "husky install",
